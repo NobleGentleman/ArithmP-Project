@@ -4,7 +4,9 @@ from .parser import Parser
 
 
 @click.command()
-@click.argument("expression")
+@click.option(
+    "-c", "--command", "expression", required=True, help="Expression to evaluate."
+)
 def main(expression: str):
     parser = Parser()
     result = parser.parse(expression)
