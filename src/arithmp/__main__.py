@@ -4,12 +4,14 @@ from .parser import Parser
 
 
 @click.command()
-@click.argument("expression")
-def main(expression: str):
+def main():
     parser = Parser()
-    result = parser.parse(expression)
 
-    click.echo(result)
+    while True:
+        line = input(">>> ")
+        if line == "exit":
+            break
+        click.echo(parser.parse(line))
 
 
 if __name__ == "__main__":
