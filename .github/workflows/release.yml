@@ -1,0 +1,35 @@
+name: Release
+
+# Run only when a tag starting with "v" is pushed (e.g. v0.1.0)
+on:
+  push:
+    tags:
+      - "v*"
+
+# Required to let the workflow create a release
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Python
+        run: uv python install 3.13
+
+        # Builds the wheel and the source archive into dist/
+      - name: Build package
+        run: uv build
+
+        # Creates a release for the pushed tag and attaches everything in dist/
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes
