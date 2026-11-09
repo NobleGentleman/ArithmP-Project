@@ -1,6 +1,6 @@
 import math
 import operator
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 
 from lark import Lark, Token, Tree
@@ -11,6 +11,16 @@ _builtins = {
     "mul": operator.mul,
     "div": operator.truediv,
     "mod": operator.mod,
+}
+
+_functions: dict[str, Callable[..., float]] = {
+    "abs": abs,
+    "round": round,
+    "min": min,
+    "max": max,
+    "sqrt": math.sqrt,
+    "floor": math.floor,
+    "ceil": math.ceil,
 }
 
 
@@ -55,6 +65,18 @@ class Parser:
                 if name not in variables:
                     raise NameError(f"Undefined variable: {name}")
                 return variables[name]
+            case "function_call":
+                name = str(tree.children[0])
+                if name not in _functions:
+                    raise NameError(f"Undefined function: {name}")
+                args: list[float] = []
+                if len(tree.children) > 1:
+                    arguments = tree.children[1]
+                    if isinstance(arguments, Tree):
+                        args = [
+                            self._eval(arg, variables) for arg in arguments.children
+                        ]
+                return _functions[name](*args)
             case _:
                 raise ValueError(f"Unexpected tree data: {tree.data}")
 
