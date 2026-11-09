@@ -35,6 +35,8 @@
         | IDENTIFIER "(" [arguments] ")" -> function_call
         | IDENTIFIER -> variable
         | "(" expr ")"
+        | "{" [arguments] "}" -> array
+        | primary "[" expr "]" -> index
 
 function:  "[" [parameters] "]" "->" expr
 
