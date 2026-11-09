@@ -44,6 +44,17 @@ class Parser:
                 return self._eval(tree.children[0], variables) ** self._eval(
                     tree.children[1], variables
                 )
+            case "variable_assignment":
+                name = str(tree.children[0])
+                value = self._eval(tree.children[1], variables)
+                variables[name] = value
+                self._variables[name] = value
+                return value
+            case "variable":
+                name = str(tree.children[0])
+                if name not in variables:
+                    raise NameError(f"Undefined variable: {name}")
+                return variables[name]
             case _:
                 raise ValueError(f"Unexpected tree data: {tree.data}")
 
