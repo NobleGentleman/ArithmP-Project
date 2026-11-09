@@ -2,6 +2,7 @@ import pytest
 
 from arithmp.parser import Parser
 
+
 def test_assign_returns_value():
     assert Parser().parse("a = 4") == 4
 
@@ -10,6 +11,7 @@ def test_assign_then_use():
     p = Parser()
     p.parse("a = 4")
     assert p.parse("a + 1") == 5
+
 
 def test_reassign():
     p = Parser()
